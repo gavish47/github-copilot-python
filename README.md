@@ -9,8 +9,6 @@ Follow these instructions to get a copy of the project up and running on your lo
 ### Dependencies
 
 ```
-- Modern web browser (Chrome, Firefox, Edge, etc.)
-- Python 3
 ```
 
 ### Installation
@@ -46,15 +44,59 @@ python app.py
 
 Use GitHub Copilot to refactor the code for this game to add more advanced features. The goal is to create a more modern and maintainable codebase and add additional functionality to the final product. You can use any combination of code completion and chat features, like Ask, Edit, or Agent modes.
 
-- Errors should be handled gracefully with appropriate messages to the user.
-- Implement a Sudoku board generator that creates a valid Sudoku puzzle with a unique solution.
-- Add a timer to track how long it takes to solve the puzzle.
-- Implement a solution checker that verifies if the user's solution is correct using event delegation.
-- Add a difficulty selector to allow users to choose between easy, medium, and hard puzzles.
-- Add a hint feature that provides clues for the user that are noted with unique colors.
-- Add a check puzzle button that checks the current state of the board against the solution.
-- User should get immediate feedback on their input, such as highlighting invalid entries.
-- Top 10 scores should be saved in local storage and displayed on the page with the user's name, time taken, hints used, and difficulty level.
-- The game should be responsive and work well on both desktop and mobile devices.
-- UI colors should be visually appealing and accessible.
-- Completed and correct puzzles should display a congratulatory message with the time taken and hints used and ask for the user's name for Top 10 times.
+
+# Sudoku Game
+
+A Flask-based Sudoku game refactored from a small legacy implementation. The browser provides the game board and interaction while Flask generates puzzles and checks submitted boards.
+
+## Features
+
+- Easy, Medium, and Hard difficulty levels.
+- Valid Sudoku generation with exactly one solution.
+- Locked prefilled cells and distinct hint cells.
+- Immediate incorrect-entry feedback and a Check Solution button.
+- Hints that fill and lock one correct editable cell.
+- MM:SS timer that starts with a new puzzle and stops on completion.
+- Top 10 leaderboard stored in browser localStorage.
+- Leaderboard records player name, completion time, difficulty, and hints used.
+- Safe handling of malformed leaderboard data and player names.
+- User-controlled Dark Mode with persisted preference.
+- Responsive desktop and mobile layout, including the Sudoku 3x3 block structure.
+- Keyboard-friendly controls, labels, focus styles, status messages, and non-color error cues.
+
+## Installation
+
+Use Python 3 and a modern web browser.
+
+From the `starter` directory, create and activate a virtual environment if desired:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## Run the Application
+
+From `starter`:
+
+```powershell
+python app.py
+```
+
+Open <http://127.0.0.1:5000> in a browser.
+
+## Test
+
+From `starter`, run the complete pytest suite:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+```
+
+The suite covers Flask routes, board validation, difficulty behavior, unique-solution generation, Check, Hint, and rendered page controls. Browser-only behavior such as localStorage, Dark Mode, responsive layout, and timer interaction should also be checked manually in a browser.

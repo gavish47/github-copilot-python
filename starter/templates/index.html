@@ -6,13 +6,51 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <h1>Sudoku Game</h1>
-  <div id="sudoku-board"></div>
-  <div class="controls">
-    <button id="new-game">New Game</button>
-    <button id="check-solution">Check Solution</button>
-    <span id="message"></span>
-  </div>
+  <main>
+    <h1>Sudoku Game</h1>
+    <fieldset class="difficulty-selector">
+      <legend>Difficulty</legend>
+      <label class="difficulty-option" for="difficulty-easy">
+        <input id="difficulty-easy" type="radio" name="difficulty" value="easy">
+        <span>Easy</span>
+      </label>
+      <label class="difficulty-option" for="difficulty-medium">
+        <input id="difficulty-medium" type="radio" name="difficulty" value="medium">
+        <span>Medium</span>
+      </label>
+      <label class="difficulty-option" for="difficulty-hard">
+        <input id="difficulty-hard" type="radio" name="difficulty" value="hard" checked>
+        <span>Hard</span>
+      </label>
+    </fieldset>
+    <div id="timer" class="timer" aria-live="polite">Time: 00:00</div>
+    <div id="sudoku-board"></div>
+    <div class="controls">
+      <button id="new-game" type="button">New Game</button>
+      <button id="check-solution" type="button">Check Solution</button>
+      <button id="hint" type="button">Hint</button>
+      <span id="hints-used">Hints: 0</span>
+      <span id="message" role="status" aria-live="polite"></span>
+      <button id="theme-toggle" type="button" aria-pressed="false">Dark Mode</button>
+    </div>
+    <section class="leaderboard" aria-labelledby="leaderboard-title">
+      <h2 id="leaderboard-title">Top 10 Leaderboard</h2>
+      <div class="leaderboard-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Name</th>
+              <th scope="col">Time</th>
+              <th scope="col">Difficulty</th>
+              <th scope="col">Hints</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
   <script src="/static/main.js"></script>
 </body>
 </html>
