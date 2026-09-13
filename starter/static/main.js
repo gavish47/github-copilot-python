@@ -21,6 +21,7 @@ function updateTimerDisplay() {
 }
 
 function startTimer() {
+  // Always clear an older interval first so repeated starts cannot accelerate time.
   stopTimer();
   timerId = setInterval(() => {
     elapsedSeconds += 1;
@@ -58,6 +59,7 @@ function handleBoardInput(event) {
   if (!input.matches('.sudoku-cell') || input.disabled) return;
 
   input.value = input.value.replace(/[^1-9]/g, '');
+  // Recheck a changed value immediately, while leaving untouched blanks alone.
   input.classList.remove('incorrect');
   input.removeAttribute('aria-invalid');
   if (input.value) checkSolution(false);
@@ -87,6 +89,8 @@ function isValidScore(score) {
 function loadLeaderboard() {
   try {
     const storedScores = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+    // Discard malformed persisted entries so old or edited storage cannot break
+    // rendering or enter the sorted top ten.
     return Array.isArray(storedScores) ? storedScores.filter(isValidScore) : [];
   } catch (error) {
     return [];
@@ -106,6 +110,7 @@ function saveLeaderboard(scores) {
   try {
     localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(scores));
   } catch (error) {
+    // Storage can be disabled or full; the completed game remains usable.
     return false;
   }
   return true;
@@ -214,6 +219,7 @@ function renderPuzzle(puz) {
 async function newGame() {
   const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
   const message = document.getElementById('message');
+  // Stop the previous game while the new puzzle request is in flight.
   stopTimer();
 
   try {
@@ -278,6 +284,7 @@ async function checkSolution(showSummary = true) {
 
     const boardIsComplete = isBoardComplete(board);
     if (boardIsComplete && incorrect.size === 0 && !gameCompleted) {
+      // This guard makes completion and score recording a one-time transition.
       stopTimer();
       finalElapsedSeconds = elapsedSeconds;
       gameCompleted = true;
@@ -317,6 +324,7 @@ async function requestHint() {
 
     const index = data.hint.row * SIZE + data.hint.column;
     const input = document.getElementById('sudoku-board').getElementsByTagName('input')[index];
+    // Hints become fixed cells so later checks cannot treat them as user edits.
     input.value = data.hint.value;
     input.disabled = true;
     input.classList.add('hinted');

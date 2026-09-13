@@ -300,6 +300,7 @@ button:focus-visible,
     }
 
     .sudoku-cell {
+        /* Fit nine cells plus the board border without horizontal scrolling. */
         width: min(40px, calc((100vw - 2rem - 8px) / 9));
         height: min(40px, calc((100vw - 2rem - 8px) / 9));
     }

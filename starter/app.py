@@ -3,7 +3,8 @@ import sudoku_logic
 
 app = Flask(__name__)
 
-# Keep a simple in-memory store for current puzzle and solution
+# The browser owns the visible board; this store supplies the matching solution
+# for the current session without exposing it in the initial page response.
 CURRENT = {
     'puzzle': None,
     'solution': None,
@@ -47,6 +48,8 @@ def check_solution():
 
     data = request.get_json(silent=True)
     board = data.get('board') if isinstance(data, dict) else None
+    # Reject malformed requests before comparing cells so API callers receive a
+    # predictable error instead of an indexing or type exception.
     if not sudoku_logic.is_valid_board_values(board):
         return jsonify({
             'error': 'Board must be a 9x9 grid containing integers from 0 to 9.'
@@ -56,6 +59,8 @@ def check_solution():
     incorrect = []
     for i in range(sudoku_logic.SIZE):
         for j in range(sudoku_logic.SIZE):
+            # Empty cells are intentionally ignored: Check reports wrong
+            # entries, not unfinished work or changes to fixed clues.
             if (puzzle[i][j] == sudoku_logic.EMPTY
                     and board[i][j] != sudoku_logic.EMPTY
                     and board[i][j] != solution[i][j]):
@@ -72,6 +77,7 @@ def get_hint():
 
     data = request.get_json(silent=True)
     board = data.get('board') if isinstance(data, dict) else None
+    # Keep malformed hint requests from changing the session hint counter.
     if not sudoku_logic.is_valid_board_values(board):
         return jsonify({
             'error': 'Board must be a 9x9 grid containing integers from 0 to 9.'
@@ -85,6 +91,7 @@ def get_hint():
             'message': 'No empty editable cells remain.',
         })
 
+    # Only a returned hint counts; asking when no editable cell remains does not.
     CURRENT['hints_used'] += 1
     return jsonify({
         'hint': hint,

@@ -187,3 +187,13 @@ The Screenshots folder must contain evidence of Copilot usage for major mileston
 - 3x3 grid styling
 
 At least one screenshot must demonstrate evaluating or rejecting a Copilot suggestion.
+## Comments and Documentation
+
+- Add concise comments to explain non-obvious logic, algorithms, and important state transitions.
+- Use comments especially for Sudoku solution counting, unique-solution puzzle generation, difficulty configuration, timer lifecycle, hint/check behavior, leaderboard persistence, and error-handling decisions.
+- Do not add comments that simply repeat what the code already says.
+- Keep comments focused on why the code works a certain way when the reason is not obvious from the code itself.
+- Use complete, clear sentences and consistent terminology throughout Python, JavaScript, HTML, and CSS.
+- Follow the existing code style and place comments close to the code they explain.
+- Keep documentation concise and useful for future developers maintaining the project.
+- When modifying existing code, preserve useful existing comments and update outdated comments rather than leaving conflicting documentation.

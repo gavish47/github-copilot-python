@@ -9,6 +9,8 @@ DIFFICULTY_CLUES = {
     'medium': 40,
     'hard': 35,
 }
+# Keeping clue counts together ensures route validation and puzzle generation
+# use the same difficulty contract.
 
 def deep_copy(board):
     return copy.deepcopy(board)
@@ -102,7 +104,8 @@ def find_hint(board, puzzle, solution):
 
 
 def is_safe(board, row, col, num):
-    # Check row and column
+    # A candidate must satisfy all three Sudoku constraints before recursion
+    # commits it to the working board.
     for x in range(SIZE):
         if board[row][x] == num or board[x][col] == num:
             return False
@@ -126,12 +129,15 @@ def fill_board(board):
                         board[row][col] = candidate
                         if fill_board(board):
                             return True
+                        # Undo this branch so the next candidate sees the board
+                        # exactly as it was before the speculative assignment.
                         board[row][col] = EMPTY
                 return False
     return True
 
 
 def count_solutions(board, limit=2):
+    """Count solutions, stopping once ``limit`` solutions are found."""
     if limit < 1:
         return 0
 
@@ -150,9 +156,13 @@ def count_solutions(board, limit=2):
             if is_safe(working_board, row, column, number):
                 working_board[row][column] = number
                 solution_count += count_from_current_board()
+                # Restore the empty cell before exploring the next candidate;
+                # otherwise one branch would contaminate all later branches.
                 working_board[row][column] = EMPTY
 
                 if solution_count >= limit:
+                    # Puzzle generation only needs to distinguish unique from
+                    # non-unique puzzles, so a second solution is sufficient.
                     return limit
 
         return solution_count
@@ -176,6 +186,8 @@ def remove_cells(board, clues):
             continue
 
         board[row][column] = EMPTY
+        # Retain a removal only when the remaining puzzle still has one
+        # solution, preserving uniqueness while reaching the clue target.
         if count_solutions(board, limit=2) == 1:
             removed_cells += 1
         else:
@@ -187,6 +199,8 @@ def generate_puzzle(clues=35, difficulty=None):
 
     board = create_empty_board()
     fill_board(board)
+    # Keep the completed board separate so the returned answer is unaffected
+    # by clue removal from the playable puzzle.
     solution = deep_copy(board)
     remove_cells(board, clues)
     puzzle = deep_copy(board)
